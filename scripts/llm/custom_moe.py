@@ -350,17 +350,17 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
     """
     dataset_dirs = {
         "sample": [
-            "/n/holyscratch01/dam_lab/brachit/moes/data/sample_dolma_testing",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/sample_dolma_testing",
         ],
         "dolma": [
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/books",
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/c4",
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/cc_en_head",
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/cc_en_middle",
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/cc_en_tail",
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/s2_v3",
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/v3",
-            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/wiki",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/books",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/c4",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/cc_en_head",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/cc_en_middle",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/cc_en_tail",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/s2_v3",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/v3",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/wiki",
         ],
     }[dataset_name]
 
