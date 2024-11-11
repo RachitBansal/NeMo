@@ -338,7 +338,6 @@ def local_executor() -> run.LocalExecutor:
 
     return run.LocalExecutor(env_vars=env_vars)
 
-
 def get_dataset_paths(dataset_name: str) -> List[str]:
     """
     Get paths to dataset files based on dataset name.
@@ -349,22 +348,31 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
     Returns:
         List[str]: List of dataset file paths
     """
-    base_dataset_dir = {
-        "sample": "/n/holyscratch01/dam_lab/brachit/moes/data/sample_dolma_testing/",
-        "dolma": "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed",
+    dataset_dirs = {
+        "sample": [
+            "/n/holyscratch01/dam_lab/brachit/moes/data/sample_dolma_testing",
+        ],
+        "dolma": [
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/books",
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/c4",
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/cc_en_head",
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/cc_en_middle",
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/cc_en_tail",
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/s2_v3",
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/v3",
+            "/n/holyscratch01/dam_lab/brachit/moes/data/dolma_processed/wiki",
+        ],
     }[dataset_name]
 
     paths = []
-    for dir_entry in os.scandir(base_dataset_dir):
-        if dir_entry.is_dir():
-            for file in os.scandir(dir_entry.path):
-                if file.name.endswith('.bin'):
-                    prefix = str(Path(file.path).with_suffix(''))
-                    if os.path.exists(prefix + '.idx'):
-                        paths.append(prefix)
+    for dataset_dir in dataset_dirs:
+        for file in os.scandir(dataset_dir):
+            if file.name.endswith('.bin'):
+                prefix = str(Path(file.path).with_suffix(''))
+                if os.path.exists(prefix + '.idx'):
+                    paths.append(prefix)
 
     return paths
-
 
 def get_vocab_paths(tokenizer_type: str) -> Tuple[str, str]:
     """
@@ -446,7 +454,7 @@ def main() -> None:
 
     # Configure logging
     pretrain.log.ckpt.save_top_k = 10
-    pretrain.log.ckpt.every_n_train_steps = 500
+    # pretrain.log.ckpt.every_n_train_steps = 500
 
     # Configure training parameters
     pretrain.trainer.max_steps = args.max_steps
