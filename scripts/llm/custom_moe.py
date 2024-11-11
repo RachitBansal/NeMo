@@ -388,7 +388,7 @@ def get_vocab_paths(tokenizer_type: str) -> Tuple[str, str]:
         ValueError: If tokenizer type is not supported
     """
     if "gpt2" in tokenizer_type.lower():
-        vocab_prefix = "/n/holyscratch01/dam_lab/brachit/moes/data_tools/gpt2"
+        vocab_prefix = "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data_tools/gpt2"
     else:
         raise ValueError(f"Unsupported tokenizer type: {tokenizer_type}")
 
