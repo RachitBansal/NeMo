@@ -70,6 +70,13 @@ from nemo.collections.llm.gpt.model.mixtral import (
     MixtralConfig8x22B,
     MixtralModel,
 )
+from nemo.collections.llm.gpt.model.custom_moe import (
+    MoEConfig,
+    MoEConfig8x3B,
+    MoEConfig8x7B,
+    MoEConfig8x22B,
+    MoEModel,
+)
 from nemo.collections.llm.gpt.model.nemotron import (
     Nemotron3Config4B,
     Nemotron3Config8B,
@@ -109,6 +116,11 @@ from nemo.collections.llm.gpt.model.starcoder2 import (
 __all__ = [
     "GPTConfig",
     "GPTModel",
+    "MoEConfig",
+    "MoEConfig8x3B",
+    "MoEConfig8x7B",
+    "MoEConfig8x22B",
+    "MoEModel",
     "MistralConfig7B",
     "MistralModel",
     "MixtralConfig8x3B",

@@ -16,6 +16,7 @@
 from nemo.collections.llm.recipes import (
     baichuan2_7b,
     chatglm3_6b,
+    custom_moe,
     gemma2,
     gemma2_2b,
     gemma2_9b,
@@ -74,6 +75,7 @@ from nemo.collections.llm.recipes.optim import adam
 __all__ = [
     "baichuan2_7b",
     "chatglm3_6b",
+    "custom_moe",
     "gemma_2b",
     "gemma_7b",
     "llama3_8b",
