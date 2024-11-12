@@ -461,7 +461,6 @@ def main() -> None:
 
     # Configure logging
     pretrain.log.ckpt.save_top_k = 10
-    # pretrain.log.ckpt.every_n_train_steps = 500
 
     # Configure training parameters
     pretrain.trainer.max_steps = args.max_steps
