@@ -175,6 +175,7 @@ def pretrain_recipe(
     num_gpus_per_node: int = 8,
     seq_length: int = 4096,
     global_batch_size: int = 512,
+    micro_batch_size: int = 32,
     performance_mode: bool = False,
     fn: Callable = pretrain,
 ) -> run.Partial:
@@ -186,11 +187,16 @@ def pretrain_recipe(
 
     Args:
         dir (Optional[str]): Directory for saving logs and checkpoints.
-        train_folder_path (str): Path to the training folder (used for datatrove dataset).
-        val_folder_path (str): Path to the validation folder (used for datatrove dataset).
+        tokenizer (str): Tokenizer name.
+        data_path (str): Path to the training folder (used for datatrove dataset).
+        vocab_path (str): Path to the vocabulary file.
+        merges_path (str): Path to the merges file.
         name (str): Name of the pre-training run.
         num_nodes (int): Number of compute nodes to use.
         num_gpus_per_node (int): Number of GPUs per node.
+        seq_length (int): Sequence length.
+        global_batch_size (int): Global batch size.
+        micro_batch_size (int): Micro batch size.
         performance_mode (bool): If true, enables optimizations for maximum performance.
         fn (Callable): The pre-training function to use.
 
@@ -219,7 +225,7 @@ def pretrain_recipe(
         # tokenizer=get_tokenizer(vocab_path, merges_path, tokenizer),
         seq_length=seq_length,
         global_batch_size=global_batch_size,
-        micro_batch_size=1,
+        micro_batch_size=micro_batch_size,
         rampup_batch_size=None,
         num_workers=8,
         split='90,5,5',

@@ -180,6 +180,12 @@ def get_parser() -> argparse.ArgumentParser:
         help="Global batch size"
     )
     training_group.add_argument(
+        "--micro_batch_size",
+        type=int,
+        default=32,
+        help="Micro batch size"
+    )
+    training_group.add_argument(
         "--learning_rate",
         type=float,
         default=3e-4,
@@ -242,7 +248,7 @@ def slurm_executor(
     partition: str,
     nodes: int,
     devices: int,
-    time: str = "01:00:00",
+    time: str = "48:00:00",
     custom_mounts: Optional[List[str]] = None,
     custom_env_vars: Optional[Dict[str, str]] = None,
     container_image: str = "nvcr.io/nvidia/nemo:dev",
@@ -301,7 +307,6 @@ def slurm_executor(
         mem="0",
         exclusive=True,
         gres=f"gpu:{devices}",
-        time="48:00:00",
     )
 
     executor.container_image = container_image
@@ -338,6 +343,7 @@ def local_executor() -> run.LocalExecutor:
 
     return run.LocalExecutor(env_vars=env_vars)
 
+
 def get_dataset_paths(dataset_name: str) -> List[str]:
     """
     Get paths to dataset files based on dataset name.
@@ -373,6 +379,7 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
                     paths.append(prefix)
 
     return paths
+
 
 def get_vocab_paths(tokenizer_type: str) -> Tuple[str, str]:
     """
@@ -423,7 +430,6 @@ def main() -> None:
         f"_hidden_size={args.hidden_size}"
         f"_num_attention_heads={args.num_attention_heads}"
         f"_ffn_hidden_size={args.ffn_hidden_size}"
-        f"_max_position_embeddings={args.max_position_embeddings}"
         f"_seq_length={args.seq_length}"
     )
 
@@ -439,6 +445,7 @@ def main() -> None:
         num_gpus_per_node=args.num_gpus_per_node,
         seq_length=args.seq_length,
         global_batch_size=args.global_batch_size,
+        micro_batch_size=args.micro_batch_size,
     )
     logging.info(f"Pretraining recipe: {pretrain}")
 
