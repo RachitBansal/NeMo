@@ -62,6 +62,65 @@ def distributed_fused_adam_with_cosine_annealing(
 
 
 @run.cli.factory
+def distributed_fused_adam_with_cosine_annealing_for_moe(
+    precision: str = "bf16-mixed",  # or "16-mixed"
+    warmup_steps: int = 2000,
+    constant_steps: int = 0,
+    adam_beta1: float = 0.9,
+    adam_beta2: float = 0.95,
+    max_lr: float = 1e-4,
+    min_lr: Optional[float] = None,
+    max_lr_moe: float = 1e-4,
+    adam_beta1_moe: float = 0.9,
+    adam_beta2_moe: float = 0.95,
+    clip_grad: float = 1.0,
+) -> run.Config[PytorchOptimizerModule]:
+
+    opt_cfg = run.Config(
+        OptimizerConfig,
+        optimizer="adam",
+        lr=max_lr,
+        weight_decay=0.1,
+        bf16=precision == "bf16-mixed",
+        fp16=precision == "16-mixed",
+        adam_beta1=adam_beta1,
+        adam_beta2=adam_beta2,
+        adam_eps=1e-5,
+        use_distributed_optimizer=True,
+        clip_grad=clip_grad,
+    )
+
+    opt_cfg_moe = run.Config(
+        OptimizerConfig,
+        optimizer="adam",
+        lr=max_lr_moe,
+        weight_decay=0.1,
+        bf16=precision == "bf16-mixed",
+        fp16=precision == "16-mixed",
+        adam_beta1=adam_beta1_moe,
+        adam_beta2=adam_beta2_moe,
+        adam_eps=1e-5,
+        use_distributed_optimizer=True,
+        clip_grad=clip_grad,
+    )
+
+    min_lr = min_lr if min_lr is not None else (0.1 * min(max_lr, max_lr_moe))
+    sched = run.Config(
+        CosineAnnealingScheduler,
+        warmup_steps=warmup_steps,
+        constant_steps=constant_steps,
+        min_lr=min_lr,
+    )
+
+    return run.Config(
+        MegatronOptimizerModule,
+        config=opt_cfg,
+        config_moe=opt_cfg_moe,
+        lr_scheduler=sched,
+    )
+
+
+@run.cli.factory
 def pytorch_adam_with_cosine_annealing(
     warmup_steps: int = 2000,
     constant_steps: int = 0,

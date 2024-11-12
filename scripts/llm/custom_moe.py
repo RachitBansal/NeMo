@@ -210,6 +210,12 @@ def get_parser() -> argparse.ArgumentParser:
         help="Learning rate"
     )
     training_group.add_argument(
+        "--learning_rate_moe",
+        type=float,
+        default=1e-5,
+        help="Learning rate for MoE experts"
+    )
+    training_group.add_argument(
         "--max_steps",
         type=int,
         default=100000,
@@ -450,6 +456,7 @@ def main() -> None:
         f"_ffn_hidden_size={args.ffn_hidden_size}"
         f"_seq_length={args.seq_length}"
         f"_learning_rate={args.learning_rate}"
+        f"_learning_rate_moe={args.learning_rate_moe}"
     )
 
     # Configure pretraining recipe
@@ -523,6 +530,7 @@ def main() -> None:
     # Configure training parameters
     pretrain.trainer.max_steps = args.max_steps
     pretrain.optim.config.lr = args.learning_rate
+    pretrain.optim.config_moe.lr = args.learning_rate_moe
 
     # Create appropriate executor
     if args.slurm:

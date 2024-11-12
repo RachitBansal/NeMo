@@ -49,6 +49,7 @@ class MegatronOptimizerModule(OptimizerModule):
     def __init__(
         self,
         config: OptimizerConfig,
+        config_moe: Optional[OptimizerConfig] = None,
         lr_scheduler: Optional[LRSchedulerModule] = None,
         no_weight_decay_cond: Optional[Callable] = None,
         scale_lr_cond: Optional[Callable] = None,
@@ -58,6 +59,7 @@ class MegatronOptimizerModule(OptimizerModule):
 
         Args:
             config (OptimizerConfig): Configuration for the optimizer.
+            config_moe (Optional[OptimizerConfig]): Configuration for the expert optimizer.
             lr_scheduler (Optional[LRSchedulerModule]): The learning rate scheduler module.
             no_weight_decay_cond (Optional[Callable]): Condition for no weight decay.
             scale_lr_cond (Optional[Callable]): Condition for scaling learning rate.
@@ -66,6 +68,7 @@ class MegatronOptimizerModule(OptimizerModule):
 
         super().__init__(lr_scheduler=lr_scheduler)
         self.config = config
+        self.config_moe = config_moe
         self.no_weight_decay_cond = no_weight_decay_cond
         self.scale_lr_cond = scale_lr_cond
         self.lr_mult = lr_mult
@@ -101,6 +104,7 @@ class MegatronOptimizerModule(OptimizerModule):
         optimizer = setup_megatron_optimizer(
             model,
             self.config,
+            config_moe=self.config_moe,
             no_weight_decay_cond=self.no_weight_decay_cond,
             scale_lr_cond=self.scale_lr_cond,
             lr_mult=self.lr_mult,
