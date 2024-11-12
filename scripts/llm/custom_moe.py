@@ -356,7 +356,7 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
     """
     dataset_dirs = {
         "sample": [
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/sample_dolma_testing",
+            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/books",
         ],
         "dolma": [
             "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/books",
