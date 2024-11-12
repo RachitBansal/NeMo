@@ -30,7 +30,7 @@ from nemo.collections.llm.gpt.model.custom_moe import MoEConfig8x3B, MoEModel
 from nemo.collections.llm.peft.lora import LoRA
 from nemo.collections.llm.recipes.finetune_default import default_finetune_recipe
 from nemo.collections.llm.recipes.log.default import default_log, default_resume, wandb_logger
-from nemo.collections.llm.recipes.optim.adam import distributed_fused_adam_with_cosine_annealing
+from nemo.collections.llm.recipes.optim.adam import distributed_fused_adam_with_cosine_annealing, distributed_fused_adam_with_cosine_annealing_for_moe
 from nemo.lightning.pytorch.callbacks.megatron_comm_overlap import MegatronCommOverlapCallback
 from nemo.lightning.pytorch.callbacks.moe_token_drop import MegatronTokenDropCallback
 from nemo.utils.exp_manager import TimingCallback
@@ -235,7 +235,9 @@ def pretrain_recipe(
         split='90,5,5',
     )
     # data_cfg = run.Config(MockDataModule, seq_length=seq_length, global_batch_size=global_batch_size, micro_batch_size=1)
-    optim_cfg = distributed_fused_adam_with_cosine_annealing(max_lr=3e-4)
+    optim_cfg = distributed_fused_adam_with_cosine_annealing_for_moe(
+        max_lr=3e-4, max_lr_moe=1e-4
+    )
     model_cfg = model(
         seq_length=seq_length,
         tokenizer=data_cfg.tokenizer,

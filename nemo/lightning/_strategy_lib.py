@@ -587,6 +587,7 @@ def _sync_from_last_pipeline_stage(value: torch.Tensor, broadcast: bool = False)
 def setup_megatron_optimizer(
     model,
     config,
+    config_moe = None,
     no_weight_decay_cond: Optional[Callable] = None,
     scale_lr_cond: Optional[Callable] = None,
     lr_mult: float = 1.0,
@@ -618,7 +619,8 @@ def setup_megatron_optimizer(
     ddp_modules = [m.module for m in model]
     mcore_opt = get_megatron_optimizer(
         config,
-        ddp_modules,
+        config_moe=config_moe,
+        model_chunks=ddp_modules,
         no_weight_decay_cond=no_weight_decay_cond,
         scale_lr_cond=scale_lr_cond,
         lr_mult=lr_mult,
