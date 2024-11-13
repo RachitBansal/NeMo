@@ -446,6 +446,11 @@ def main() -> None:
         seq_length=args.seq_length,
         global_batch_size=args.global_batch_size,
         micro_batch_size=args.micro_batch_size,
+        num_layers=args.num_layers,
+        hidden_size=args.hidden_size,
+        num_attention_heads=args.num_attention_heads,
+        ffn_hidden_size=args.ffn_hidden_size,
+        num_moe_experts=args.num_moe_experts,
     )
     logging.info(f"Pretraining recipe: {pretrain}")
 
