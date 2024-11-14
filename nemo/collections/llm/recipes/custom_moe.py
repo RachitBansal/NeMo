@@ -41,12 +41,6 @@ NAME = "moe_8x7b"
 @run.cli.factory(name=NAME)
 def model(
     seq_length: int,
-    num_layers: int,
-    hidden_size: int,
-    num_attention_heads: int,
-    ffn_hidden_size: int,
-    max_position_embeddings: int,
-    num_moe_experts: int,
     tokenizer: Any,
     optim: Any,
 ) -> run.Config[pl.LightningModule]:
@@ -73,12 +67,6 @@ def model(
         MoEModel, config=run.Config(
             MoEConfig8x3B,
             seq_length=seq_length,
-            num_layers=num_layers,
-            hidden_size=hidden_size,
-            num_attention_heads=num_attention_heads,
-            ffn_hidden_size=ffn_hidden_size,
-            max_position_embeddings=max_position_embeddings,
-            num_moe_experts=num_moe_experts,
         ),
         tokenizer=tokenizer,
         optim=optim,
@@ -190,11 +178,6 @@ def pretrain_recipe(
     num_nodes: int = 8,
     num_gpus_per_node: int = 8,
     seq_length: int = 4096,
-    num_layers: int = 16,
-    hidden_size: int = 2560,
-    num_attention_heads: int = 32,
-    ffn_hidden_size: int = 5120,
-    num_moe_experts: int = 8,
     global_batch_size: int = 512,
     micro_batch_size: int = 32,
     performance_mode: bool = False,
@@ -257,11 +240,6 @@ def pretrain_recipe(
         seq_length=seq_length,
         tokenizer=data_cfg.tokenizer,
         optim=optim_cfg,
-        num_layers=num_layers,  
-        hidden_size=hidden_size,
-        num_attention_heads=num_attention_heads,
-        ffn_hidden_size=ffn_hidden_size,
-        num_moe_experts=num_moe_experts,
     )
     recipe = run.Partial(
         fn,

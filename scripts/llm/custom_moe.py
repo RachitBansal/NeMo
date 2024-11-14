@@ -356,17 +356,17 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
     """
     dataset_dirs = {
         "sample": [
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/books",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/books",
         ],
         "dolma": [
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/books",
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/c4",
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/cc_en_head",
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/cc_en_middle",
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/cc_en_tail",
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/s2_v3",
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/v3",
-            "/n/holylfs06/LABS/kempner_shared/Everyone/containers/mlperf_benchmarking/nemo_dev_code/data/dolma_processed/wiki",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/books",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/c4",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_head",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_middle",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_tail",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/s2_v3",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/v3",
+            "/n/netscratch/dam_lab/Everyone/dolma_processed/wiki",
         ],
     }[dataset_name]
 
@@ -431,6 +431,7 @@ def main() -> None:
         f"_num_attention_heads={args.num_attention_heads}"
         f"_ffn_hidden_size={args.ffn_hidden_size}"
         f"_seq_length={args.seq_length}"
+        f"_learning_rate={args.learning_rate}"
     )
 
     # Configure pretraining recipe
@@ -446,13 +447,16 @@ def main() -> None:
         seq_length=args.seq_length,
         global_batch_size=args.global_batch_size,
         micro_batch_size=args.micro_batch_size,
-        num_layers=args.num_layers,
-        hidden_size=args.hidden_size,
-        num_attention_heads=args.num_attention_heads,
-        ffn_hidden_size=args.ffn_hidden_size,
-        num_moe_experts=args.num_moe_experts,
     )
     logging.info(f"Pretraining recipe: {pretrain}")
+
+    # Configure model
+    pretrain.model.config.num_layers = args.num_layers
+    pretrain.model.config.hidden_size = args.hidden_size
+    pretrain.model.config.num_attention_heads = args.num_attention_heads
+    pretrain.model.config.ffn_hidden_size = args.ffn_hidden_size
+    pretrain.model.config.num_moe_experts = args.num_moe_experts
+    pretrain.model.config.max_position_embeddings = args.max_position_embeddings
 
     # Configure training strategy
     pretrain.trainer.strategy.tensor_model_parallel_size = args.tensor_model_parallel_size
