@@ -170,6 +170,24 @@ def get_parser() -> argparse.ArgumentParser:
         default="/n/holyscratch01/dam_lab/brachit/moes/optim/out",
         help="Base directory for output files"
     )
+    runtime_group.add_argument(
+        "--every_n_train_steps",
+        type=int,
+        default=1000,
+        help="Save checkpoint every N train steps"
+    )
+    runtime_group.add_argument(
+        "--save_top_k",
+        type=int,
+        default=5,
+        help="Save top K checkpoints"
+    )
+    runtime_group.add_argument(
+        "--val_check_interval",
+        type=int,
+        default=500,
+        help="Validation check interval"
+    )
 
     # MoE and training configuration
     training_group = parser.add_argument_group("MoE and Training Configuration")
@@ -458,6 +476,9 @@ def main() -> None:
     pretrain.model.config.num_moe_experts = args.num_moe_experts
     pretrain.model.config.max_position_embeddings = args.max_position_embeddings
 
+    # Configure data
+    pretrain.data.index_mapping_dir = "/".join(data_paths[-1].split("/")[:-2])
+
     # Configure training strategy
     pretrain.trainer.strategy.tensor_model_parallel_size = args.tensor_model_parallel_size
     pretrain.trainer.strategy.pipeline_dtype = None
@@ -469,7 +490,10 @@ def main() -> None:
     pretrain.trainer.val_check_interval = 500
 
     # Configure logging
-    pretrain.log.ckpt.save_top_k = 10
+    pretrain.log.ckpt.save_top_k = args.save_top_k
+    pretrain.log.ckpt.save_last = True
+    pretrain.log.ckpt.train_time_interval = None
+    pretrain.log.ckpt.every_n_train_steps = args.every_n_train_steps
 
     # Configure training parameters
     pretrain.trainer.max_steps = args.max_steps
