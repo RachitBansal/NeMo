@@ -457,6 +457,8 @@ def main() -> None:
         f"_seq_length={args.seq_length}"
         f"_learning_rate={args.learning_rate}"
         f"_learning_rate_moe={args.learning_rate_moe}"
+        f"_max_steps={args.max_steps}"
+        f"_batch_size={args.global_batch_size}"
     )
 
     # Configure pretraining recipe
@@ -494,13 +496,10 @@ def main() -> None:
     pretrain.trainer.strategy.context_parallel_size = args.context_parallel_size
     pretrain.trainer.strategy.sequence_parallel = args.sequence_parallel
     pretrain.trainer.strategy.expert_model_parallel_size = args.expert_model_parallel_size
-    pretrain.trainer.val_check_interval = 500
+    pretrain.trainer.val_check_interval = args.val_check_interval
 
     # Configure logging
-    pretrain.log.ckpt.save_top_k = args.save_top_k
-    pretrain.log.ckpt.save_last = True
-    pretrain.log.ckpt.train_time_interval = None
-    pretrain.log.ckpt.every_n_train_steps = args.every_n_train_steps
+    pretrain.log.ckpt.save_top_k = 10
 
     pretrain.log.wandb.config = {
         "model_config": args.model_config,
@@ -532,6 +531,31 @@ def main() -> None:
     pretrain.optim.config.lr = args.learning_rate
     pretrain.optim.config_moe.lr = args.learning_rate_moe
 
+    pretrain.log.wandb.config = {
+        "model_config": args.model_config,
+        "dataset_name": args.dataset_name,
+        "tokenizer_type": args.tokenizer_type,
+        "num_moe_experts": args.num_moe_experts,
+        "num_layers": args.num_layers,
+        "hidden_size": args.hidden_size,
+        "num_attention_heads": args.num_attention_heads,
+        "ffn_hidden_size": args.ffn_hidden_size,
+        "seq_length": args.seq_length,
+        "max_position_embeddings": args.max_position_embeddings,
+        "learning_rate": args.learning_rate,
+        "learning_rate_moe": args.learning_rate_moe,
+        "global_batch_size": args.global_batch_size,
+        "micro_batch_size": args.micro_batch_size,
+        "max_steps": args.max_steps,
+        "tensor_model_parallel_size": args.tensor_model_parallel_size,
+        "pipeline_model_parallel_size": args.pipeline_model_parallel_size,
+        "virtual_pipeline_model_parallel_size": args.virtual_pipeline_model_parallel_size,
+        "context_parallel_size": args.context_parallel_size,
+        "sequence_parallel": args.sequence_parallel,
+        "expert_model_parallel_size": args.expert_model_parallel_size,
+        "num_nodes": args.num_nodes,
+        "num_gpus_per_node": args.num_gpus_per_node
+    }
     # Create appropriate executor
     if args.slurm:
         executor = slurm_executor(
