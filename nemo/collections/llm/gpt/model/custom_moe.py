@@ -106,6 +106,26 @@ class MoEConfig8x3B(MoEConfig):
 
     # MoE
     num_moe_experts: int = 8
+    moe_router_load_balancing_type: str = 'aux_loss'
+
+
+@dataclass
+class MoEConfig8x3BRandom(MoEConfig):
+    """
+    NeMo's Mixtral-8x3B model variant
+    https://github.com/NVIDIA/NeMo-Framework-Launcher/blob/main/launcher_scripts/conf/training/mixtral/mixtral_8x3b.yaml
+    """
+
+    num_layers: int = 16
+    hidden_size: int = 2560
+    num_attention_heads: int = 32
+    ffn_hidden_size: int = 5120
+    max_position_embeddings: int = 4096
+    seq_length: int = 4096
+
+    # MoE
+    num_moe_experts: int = 8
+    moe_router_load_balancing_type: str = 'random'
 
 
 @dataclass
@@ -413,6 +433,7 @@ def _export_moe_w1_w3(linear_fc1):
 __all__ = [
     "MoEConfig",
     "MoEConfig8x3B",
+    "MoEConfig8x3BRandom",
     "MoEConfig8x7B",
     "MoEConfig8x22B",
     "MoEModel",

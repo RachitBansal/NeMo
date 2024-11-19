@@ -26,7 +26,7 @@ from nemo import lightning as nl
 from nemo.collections.llm.api import finetune, pretrain
 from nemo.collections.llm.gpt.data.mock import MockDataModule
 from nemo.collections.llm.gpt.data.pre_training import PreTrainingDataModule
-from nemo.collections.llm.gpt.model.custom_moe import MoEConfig8x3B, MoEModel
+from nemo.collections.llm.gpt.model.custom_moe import MoEConfig8x3B, MoEModel, MoEConfig8x3BRandom
 from nemo.collections.llm.peft.lora import LoRA
 from nemo.collections.llm.recipes.finetune_default import default_finetune_recipe
 from nemo.collections.llm.recipes.log.default import default_log, default_resume, wandb_logger
@@ -37,9 +37,14 @@ from nemo.utils.exp_manager import TimingCallback
 
 NAME = "moe_8x7b"
 
+CONFIG_NAME_TO_MODEL_CONFIG = {
+    "moe_8x7b": MoEConfig8x3B,
+    "moe_8x7b_random": MoEConfig8x3BRandom,
+}
 
 @run.cli.factory(name=NAME)
 def model(
+    config_name: str,
     seq_length: int,
     tokenizer: Any,
     optim: Any,
@@ -65,7 +70,7 @@ def model(
     """
     return run.Config(
         MoEModel, config=run.Config(
-            MoEConfig8x3B,
+            CONFIG_NAME_TO_MODEL_CONFIG[config_name],
             seq_length=seq_length,
         ),
         tokenizer=tokenizer,
@@ -170,6 +175,7 @@ def get_tokenizer(vocab_path, merges_path, tokenizer_name="GPT2BPETokenizer") ->
 @run.cli.factory(target=pretrain, name=NAME)
 def pretrain_recipe(
     dir: Optional[str] = None,
+    config_name: str = "moe_8x7b",
     tokenizer: str = "GPT2BPETokenizer",
     data_path: str = "",
     vocab_path: str = "",
@@ -191,6 +197,7 @@ def pretrain_recipe(
 
     Args:
         dir (Optional[str]): Directory for saving logs and checkpoints.
+        config_name (str): Name of the model configuration to use.
         tokenizer (str): Tokenizer name.
         data_path (str): Path to the training folder (used for datatrove dataset).
         vocab_path (str): Path to the vocabulary file.
@@ -239,6 +246,7 @@ def pretrain_recipe(
         max_lr=3e-4, max_lr_moe=1e-4
     )
     model_cfg = model(
+        config_name=config_name,
         seq_length=seq_length,
         tokenizer=data_cfg.tokenizer,
         optim=optim_cfg,

@@ -73,6 +73,7 @@ from nemo.collections.llm.gpt.model.mixtral import (
 from nemo.collections.llm.gpt.model.custom_moe import (
     MoEConfig,
     MoEConfig8x3B,
+    MoEConfig8x3BRandom,
     MoEConfig8x7B,
     MoEConfig8x22B,
     MoEModel,
@@ -118,6 +119,7 @@ __all__ = [
     "GPTModel",
     "MoEConfig",
     "MoEConfig8x3B",
+    "MoEConfig8x3BRandom",
     "MoEConfig8x7B",
     "MoEConfig8x22B",
     "MoEModel",
