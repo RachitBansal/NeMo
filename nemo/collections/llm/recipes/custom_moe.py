@@ -38,8 +38,8 @@ from nemo.utils.exp_manager import TimingCallback
 NAME = "moe_8x7b"
 
 CONFIG_NAME_TO_MODEL_CONFIG = {
-    "moe_8x7b": MoEConfig8x3B,
-    "moe_8x7b_random": MoEConfig8x3BRandom,
+    "MoEConfig8x3B": MoEConfig8x3B,
+    "MoEConfig8x3BRandom": MoEConfig8x3BRandom,
 }
 
 @run.cli.factory(name=NAME)
@@ -238,7 +238,7 @@ def pretrain_recipe(
         global_batch_size=global_batch_size,
         micro_batch_size=micro_batch_size,
         rampup_batch_size=None,
-        num_workers=8,
+        num_workers=num_gpus_per_node * num_nodes * 12,
         split='90,5,5',
     )
     # data_cfg = run.Config(MockDataModule, seq_length=seq_length, global_batch_size=global_batch_size, micro_batch_size=1)
