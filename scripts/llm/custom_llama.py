@@ -465,8 +465,9 @@ def main() -> None:
     pretrain.model.config.hidden_size = args.hidden_size
     pretrain.model.config.num_attention_heads = args.num_attention_heads
     pretrain.model.config.ffn_hidden_size = args.ffn_hidden_size
-    pretrain.model.config.rotary_base = 10000
-    pretrain.model.config.old_context_len = args.seq_length
+    # pretrain.model.config.rotary_base = 10000
+    # pretrain.model.config.old_context_len = args.seq_length
+    pretrain.model.config.position_embedding_type = "learned_absolute"
 
     # Configure data
     pretrain.data.index_mapping_dir = "/".join(data_paths[-1].split("/")[:-2])
