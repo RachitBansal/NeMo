@@ -395,7 +395,6 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
                 prefix = str(Path(file.path).with_suffix(''))
                 if os.path.exists(prefix + '.idx'):
                     paths.append(prefix)
-
     return paths
 
 
@@ -477,7 +476,10 @@ def main() -> None:
     pretrain.model.config.max_position_embeddings = args.max_position_embeddings
 
     # Configure data
-    pretrain.data.index_mapping_dir = "/".join(data_paths[-1].split("/")[:-2])
+    # Alex: harcoded
+    # paths += ['/n/netscratch/kempner_pehlevan_lab/Everyone/ameterez/data_cache']
+    # pretrain.data.index_mapping_dir = "/".join(data_paths[-1].split("/")[:-2])
+    pretrain.data.index_mapping_dir = '/n/netscratch/kempner_pehlevan_lab/Everyone/ameterez/data_cache'
 
     # Configure training strategy
     pretrain.trainer.strategy.tensor_model_parallel_size = args.tensor_model_parallel_size
