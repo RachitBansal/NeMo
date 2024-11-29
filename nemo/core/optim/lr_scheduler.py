@@ -420,9 +420,11 @@ class SquareRootAnnealing(WarmupPolicy):
 class CosineAnnealing(WarmupAnnealHoldPolicy):
     def __init__(self, optimizer, *, max_steps, min_lr=0, last_epoch=-1, **kwargs):
         super().__init__(optimizer=optimizer, max_steps=max_steps, last_epoch=last_epoch, min_lr=min_lr, **kwargs)
-
+        # Alex: hardcoded
+        self.min_lr = self.base_lrs[0] * 0.1 # this is currently BUG
     def _get_lr(self, step):
         for initial_lr in self.base_lrs:
+            print(f"initial_lr = {initial_lr}, min_lr = {self.min_lr}", flush=True)
             if initial_lr < self.min_lr:
                 raise ValueError(
                     f"{self} received an initial learning rate that was lower than the minimum learning rate."

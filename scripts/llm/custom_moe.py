@@ -384,13 +384,13 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
         ],
         "dolma": [
             "/n/netscratch/dam_lab/Everyone/dolma_processed/books",
-            "/n/netscratch/dam_lab/Everyone/dolma_processed/c4",
-            "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_head",
-            "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_middle",
-            "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_tail",
-            "/n/netscratch/dam_lab/Everyone/dolma_processed/s2_v3",
-            "/n/netscratch/dam_lab/Everyone/dolma_processed/v3",
-            "/n/netscratch/dam_lab/Everyone/dolma_processed/wiki",
+            # "/n/netscratch/dam_lab/Everyone/dolma_processed/c4",
+            # "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_head",
+            # "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_middle",
+            # "/n/netscratch/dam_lab/Everyone/dolma_processed/cc_en_tail",
+            # "/n/netscratch/dam_lab/Everyone/dolma_processed/s2_v3",
+            # "/n/netscratch/dam_lab/Everyone/dolma_processed/v3",
+            # "/n/netscratch/dam_lab/Everyone/dolma_processed/wiki",
         ],
     }[dataset_name]
 
@@ -427,7 +427,7 @@ def get_vocab_paths(tokenizer_type: str) -> Tuple[str, str]:
 
 def main() -> None:
     """Main execution function for MoE pretraining."""
-    print("Starting main execution")
+    print("Starting main execution", flush=True)
     args = get_parser().parse_args()
     
     if "NEMORUN_HOME" not in os.environ:

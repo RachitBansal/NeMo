@@ -336,7 +336,14 @@ class GPTModel(L.LightningModule, io.IOMixin, io.ConnectorMixin, fn.FNMixin):
         self.config = config
         self.tokenizer = tokenizer
         self.optim = optim or MegatronOptimizerModule(config=OptimizerConfig(lr=1e-4, use_distributed_optimizer=True))
+        
         self.optim.connect(self)  # This will bind the `configure_optimizers` method
+
+        # for i, param_group in enumerate(self.optim(self)[0].param_groups):
+        #     print(f"Parameter Group {i}:")
+        #     print(f"  Learning Rate: {param_group.get('lr', 'Not specified')}")
+        #     print(f"  Weight Decay: {param_group.get('weight_decay', 'Not specified')}")
+        #     print(f"  Number of Parameters: {len(param_group.get('params', []))}")
         self.model_transform = model_transform
         self._training_loss_reduction = None
         self._validation_loss_reduction = None
