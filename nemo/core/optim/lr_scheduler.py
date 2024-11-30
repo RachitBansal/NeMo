@@ -50,14 +50,16 @@ class WarmupPolicy(_LRScheduler):
 
         # It is necessary to assign all attributes *before* __init__,
         # as class is wrapped by an inner class.
+        
+        # Alex: hardcoded
         self.max_steps = max_steps
+        # self.warmup_ratio = 0.2
         if warmup_steps is not None:
             self.warmup_steps = warmup_steps
         elif warmup_ratio is not None:
             self.warmup_steps = int(warmup_ratio * max_steps)
         else:
             self.warmup_steps = 0
-
         self.min_lr = min_lr
         super().__init__(optimizer, last_epoch)
 
@@ -241,15 +243,17 @@ class WarmupAnnealHoldPolicy(_LRScheduler):
         optimizer,
         *,
         warmup_steps=None,
-        warmup_ratio=None,
+        warmup_ratio=0.2,
         constant_steps=None,
         constant_ratio=None,
         max_steps=None,
         min_lr=0.0,
         last_epoch=-1,
     ):
-        # self.max_steps = None
-        # self.warmup_ratio = 0.2
+
+        # Alex: hardcoded
+        self.warmup_steps = None
+        self.warmup_ratio = 0.2
 
         assert not (
             warmup_steps is not None and warmup_ratio is not None
@@ -261,7 +265,12 @@ class WarmupAnnealHoldPolicy(_LRScheduler):
 
         # It is necessary to assign all attributes *before* __init__,
         # as class is wrapped by an inner class.
+
+        # Alex: hardcoded
+        self.warmup_steps = None 
         self.max_steps = max_steps
+        self.warmup_ratio = 0.2
+
         if warmup_steps is not None:
             self.warmup_steps = warmup_steps
         elif warmup_ratio is not None:
@@ -278,10 +287,10 @@ class WarmupAnnealHoldPolicy(_LRScheduler):
 
         self.decay_steps = max_steps - (self.constant_steps + self.warmup_steps)
 
-        # print("in class", flush=True)
-        # print(f"warmup_ratio={warmup_ratio}", flush=True)
-        # print(f"max_steps={self.max_steps}", flush=True)
-        # print(f"warmup_steps={self.warmup_steps}", flush=True)
+        print("in class", flush=True)
+        print(f"warmup_ratio={warmup_ratio}", flush=True)
+        print(f"max_steps={self.max_steps}", flush=True)
+        print(f"warmup_steps={self.warmup_steps}", flush=True)
 
         self.min_lr = min_lr
         super().__init__(optimizer, last_epoch)

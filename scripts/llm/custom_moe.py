@@ -144,6 +144,14 @@ def get_parser() -> argparse.ArgumentParser:
         default="kempner_h100",
         help="Slurm partition name"
     )
+    slurm_group.add_argument(
+        "--slurm_exclude_nodes",
+        type=str,
+        nargs='+',
+        default=None,
+        help="List of node names to exclude from the Slurm job"
+    )
+
 
     # Runtime configuration
     runtime_group = parser.add_argument_group("Runtime Configuration") 
@@ -272,6 +280,7 @@ def slurm_executor(
     partition: str,
     nodes: int,
     devices: int,
+    exclude: Optional[List[str]] = None,
     time: str = "48:00:00",
     custom_mounts: Optional[List[str]] = None,
     custom_env_vars: Optional[Dict[str, str]] = None,
@@ -316,6 +325,7 @@ def slurm_executor(
     }
     if custom_env_vars:
         env_vars.update(custom_env_vars)
+    exclude_nodes = ','.join(exclude) if exclude else None
 
     executor = run.SlurmExecutor(
         account=account,
@@ -331,6 +341,7 @@ def slurm_executor(
         mem="0",
         exclusive=True,
         gres=f"gpu:{devices}",
+        exclude=exclude_nodes
     )
 
     executor.container_image = container_image
@@ -548,6 +559,7 @@ def main() -> None:
             partition=args.slurm_partition,
             nodes=pretrain.trainer.num_nodes,
             devices=pretrain.trainer.devices,
+            exclude=args.slurm_exclude_nodes,
         )
         logging.info(f"Slurm executor: {executor}")
     else:

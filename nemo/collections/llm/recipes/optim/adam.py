@@ -64,7 +64,7 @@ def distributed_fused_adam_with_cosine_annealing(
 @run.cli.factory
 def distributed_fused_adam_with_cosine_annealing_for_moe(
     precision: str = "bf16-mixed",  # or "16-mixed"
-    warmup_steps: int = 2000,
+    warmup_steps: int = None,
     constant_steps: int = 0,
     adam_beta1: float = 0.9,
     adam_beta2: float = 0.95,
@@ -108,7 +108,7 @@ def distributed_fused_adam_with_cosine_annealing_for_moe(
     print(f"min_lr = {min_lr}", flush=True)
     sched = run.Config(
         CosineAnnealingScheduler,
-        warmup_steps=warmup_steps,
+        warmup_steps=None,
         constant_steps=constant_steps,
         min_lr=min_lr,
     )
