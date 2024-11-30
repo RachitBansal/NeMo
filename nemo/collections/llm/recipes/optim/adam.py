@@ -75,7 +75,7 @@ def distributed_fused_adam_with_cosine_annealing_for_moe(
     adam_beta2_moe: float = 0.95,
     clip_grad: float = 1.0,
 ) -> run.Config[PytorchOptimizerModule]:
-    print("IN HERE. ", flush=True)
+    # print("IN HERE. ", flush=True)
     opt_cfg = run.Config(
         OptimizerConfig,
         optimizer="adam",
@@ -104,7 +104,7 @@ def distributed_fused_adam_with_cosine_annealing_for_moe(
         clip_grad=clip_grad,
     )
 
-    min_lr = min_lr if min_lr is not None else (0.1 * min(max_lr, max_lr_moe))
+    min_lr = 0.1 * min(max_lr, max_lr_moe)
     print(f"min_lr = {min_lr}", flush=True)
     sched = run.Config(
         CosineAnnealingScheduler,
