@@ -144,6 +144,14 @@ def get_parser() -> argparse.ArgumentParser:
         default="kempner_h100",
         help="Slurm partition name"
     )
+    slurm_group.add_argument(
+        "--slurm_exclude_nodes",
+        type=str,
+        nargs='+',
+        default=None,
+        help="List of node names to exclude from the Slurm job"
+    )
+
 
     # Runtime configuration
     runtime_group = parser.add_argument_group("Runtime Configuration") 
@@ -272,6 +280,7 @@ def slurm_executor(
     partition: str,
     nodes: int,
     devices: int,
+    exclude: Optional[List[str]] = None,
     time: str = "48:00:00",
     custom_mounts: Optional[List[str]] = None,
     custom_env_vars: Optional[Dict[str, str]] = None,
@@ -316,6 +325,7 @@ def slurm_executor(
     }
     if custom_env_vars:
         env_vars.update(custom_env_vars)
+    exclude_nodes = ','.join(exclude) if exclude else None
 
     executor = run.SlurmExecutor(
         account=account,
@@ -331,6 +341,7 @@ def slurm_executor(
         mem="0",
         exclusive=True,
         gres=f"gpu:{devices}",
+        exclude=exclude_nodes
     )
 
     executor.container_image = container_image
@@ -401,7 +412,6 @@ def get_dataset_paths(dataset_name: str) -> List[str]:
                 prefix = str(Path(file.path).with_suffix(''))
                 if os.path.exists(prefix + '.idx'):
                     paths.append(prefix)
-
     return paths
 
 
@@ -428,7 +438,7 @@ def get_vocab_paths(tokenizer_type: str) -> Tuple[str, str]:
 
 def main() -> None:
     """Main execution function for MoE pretraining."""
-    print("Starting main execution")
+    print("Starting main execution", flush=True)
     args = get_parser().parse_args()
     
     if "NEMORUN_HOME" not in os.environ:
@@ -487,7 +497,10 @@ def main() -> None:
     pretrain.model.config.max_position_embeddings = args.max_position_embeddings
 
     # Configure data
-    pretrain.data.index_mapping_dir = "/".join(data_paths[-1].split("/")[:-2])
+    # Alex: harcoded
+    # paths += ['/n/netscratch/kempner_pehlevan_lab/Everyone/ameterez/data_cache']
+    # pretrain.data.index_mapping_dir = "/".join(data_paths[-1].split("/")[:-2])
+    pretrain.data.index_mapping_dir = '/n/netscratch/kempner_pehlevan_lab/Everyone/ameterez/data_cache'
 
     # Configure training strategy
     pretrain.trainer.strategy.tensor_model_parallel_size = args.tensor_model_parallel_size
@@ -546,6 +559,7 @@ def main() -> None:
             partition=args.slurm_partition,
             nodes=pretrain.trainer.num_nodes,
             devices=pretrain.trainer.devices,
+            exclude=args.slurm_exclude_nodes,
         )
         logging.info(f"Slurm executor: {executor}")
     else:

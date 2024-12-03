@@ -245,6 +245,7 @@ def pretrain_recipe(
     optim_cfg = distributed_fused_adam_with_cosine_annealing_for_moe(
         max_lr=3e-4, max_lr_moe=1e-4
     )
+    print("HEREEEE.", flush=True)
     model_cfg = model(
         config_name=config_name,
         seq_length=seq_length,

@@ -69,6 +69,11 @@ class MegatronOptimizerModule(OptimizerModule):
         super().__init__(lr_scheduler=lr_scheduler)
         self.config = config
         self.config_moe = config_moe
+
+        # Alex: hardcoded
+        self.config.min_lr = self.config.lr * 0.1
+        self.config_moe.min_lr = self.config_moe.lr * 0.1
+
         self.no_weight_decay_cond = no_weight_decay_cond
         self.scale_lr_cond = scale_lr_cond
         self.lr_mult = lr_mult
@@ -100,7 +105,7 @@ class MegatronOptimizerModule(OptimizerModule):
 
         if not isinstance(model, MegatronParallel):
             raise ValueError("Model must be an instance of MegatronParallel")
-
+        
         optimizer = setup_megatron_optimizer(
             model,
             self.config,
