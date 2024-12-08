@@ -238,7 +238,7 @@ def pretrain_recipe(
         global_batch_size=global_batch_size,
         micro_batch_size=micro_batch_size,
         rampup_batch_size=None,
-        num_workers=4,
+        num_workers=0,
         split='90,5,5',
     )
     # data_cfg = run.Config(MockDataModule, seq_length=seq_length, global_batch_size=global_batch_size, micro_batch_size=1)
